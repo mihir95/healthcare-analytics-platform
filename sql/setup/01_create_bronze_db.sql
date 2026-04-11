@@ -1,0 +1,2 @@
+CREATE DATABASE IF NOT EXISTS bronze
+MANAGED LOCATION '{bronze_path}'
