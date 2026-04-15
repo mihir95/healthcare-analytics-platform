@@ -185,23 +185,28 @@ Spark in local mode on a single node. This is:
 ## Practical Decision Framework
 
 When facing cluster issues in Azure Databricks:
+
 Cannot select node in UI?
-→ Policy or workspace constraint issue
-→ Try All Purpose Unrestricted
+- Policy or workspace constraint issue
+- Try All Purpose Unrestricted
+
 Can select but cluster fails to start?
-→ Check Azure quota (Portal → Quotas → Compute → your region)
-→ Request quota increase if needed
+- Check Azure quota (Portal → Quotas → Compute → your region)
+- Request quota increase if needed
+
 Cluster starts but job fails?
-→ Check regional VM capacity
-→ Try different VM type or different region
+- Check regional VM capacity
+- Try different VM type or different region
+
 DBU higher than expected?
-→ Check workspace pricing tier
-→ Check compute class (Personal vs All Purpose)
+- Check workspace pricing tier
+- Check compute class (Personal vs All Purpose)
+
 Cost concern on dev cluster?
-→ Enable spot instances (saves 60-70%)
-→ Set auto-termination to 20 minutes
-→ Use single node for dev work
-→ Avoid GPU nodes for ETL/DE work
+- Enable spot instances (saves 60-70%)
+- Set auto-termination to 20 minutes
+- Use single node for dev work
+- Avoid GPU nodes for ETL/DE work
 
 ---
 

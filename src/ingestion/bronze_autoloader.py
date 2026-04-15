@@ -1,4 +1,13 @@
-from pyspark.sql.functions import current_timestamp, input_file_name
+import re
+from pyspark.sql.functions import current_timestamp, col, lit
+
+def clean_cols(df):
+    return df.toDF(*[
+        re.sub(r'_+', '_',  # collapse multiple _
+            re.sub(r'[^a-zA-Z0-9]', '_', c.strip().lower())
+        ).strip('_')  # remove leading/trailing _
+        for c in df.columns
+    ])
 
 def load_bronze(spark, input_path, schema_path, checkpoint_path, table_name, source_name):
 
@@ -9,16 +18,18 @@ def load_bronze(spark, input_path, schema_path, checkpoint_path, table_name, sou
             .option("cloudFiles.inferColumnTypes", "false")
             .option("cloudFiles.schemaEvolutionMode", "none")
             .option("cloudFiles.rescuedDataColumn", "_rescued_data")
-            .option("schemaLocation", schema_path)
+            .option("cloudFiles.schemaLocation", schema_path)
             .load(input_path)
-            .withCooulmn("file_name", input_file_name())
-            .withColumn("source_name", source_name)
+            .withColumn("file_name", col("_metadata.file_name"))
+            .withColumn("source_name", lit(source_name))
             .withColumn("load_timestamp", current_timestamp())
         )
 
-        autoloader_write = df.writestream \
+        df = clean_cols(df)
+
+        autoloader_write = df.writeStream \
             .format("delta") \
-            .option("checkpoinLocation", checkpoint_path) \
+            .option("checkpointLocation", checkpoint_path) \
             .trigger(availableNow=True) \
             .table(table_name)
         
