@@ -20,8 +20,8 @@ def load_bronze(spark, input_path, schema_path, checkpoint_path, table_name, sou
             .option("cloudFiles.rescuedDataColumn", "_rescued_data")
             .option("cloudFiles.schemaLocation", schema_path)
             .load(input_path)
-            .withColumn("file_name", col("_metadata.file_name"))
-            .withColumn("source_name", lit(source_name))
+            .withColumn("source_data", col("_metadata.file_name"))
+            .withColumn("source_code", lit(source_name))
             .withColumn("load_timestamp", current_timestamp())
         )
 
